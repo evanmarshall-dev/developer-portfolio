@@ -37,5 +37,247 @@ GROQ allows you to fetch any collection of JSON documents and allows you to filt
 3. Use the `defineConfig` function, assign to variable config, and pass in an object.
 4. Inside the `defineConfig` object we need to pass in the projectId (from local studio setup), dataset (convenient if you had multiple datasets such as one for development and one for production), title, api version (today's date), base path (URL where we want Sanity studio to live and create route for it within Next.js app folder), plugins (structureTool).
 5. Create the catch all route under `/app/admin/[[...index]]/page.tsx` so that all routes under admin go to `page.tsx`.
-6. Inside `page.tsx` we want to export default AdminPage component and return `<NextStudio cconfig={config} />` NextStudio with config equal to the config we just created in `sanity.config.ts`.
+6. Inside `page.tsx` we want to export default AdminPage component and return `<NextStudio config={config} />` NextStudio with config equal to the config we just created in `sanity.config.ts`.
 7. Next.js auto moves all routes under app to the server side. Therefore we need to add `"use-client"`.
+
+#### Add Content Types on Sanity Studio
+
+- Create a new folder at the app root called `sanity`. Within this folder create another folder (`schemas`) with `project-schema.ts` file within.
+- Define project schema (name, title and type). Good practice is to define name as singular and title (Title shows in studio) as plural.
+- Define a fields array which contains a bunch of objects which correspond to a field within the schema.
+- Drop schema into the Sanity config so we can show schema type in our Studio.
+- Refactor code in sanity config by creating a barrel file within `/sanity/schemas/index.ts` containing the code below. Each time we add a new schema we add to this `index.ts` barrel file and import into the sanity config file instead of having a new import for each schema.
+
+Complete schema and config code:
+
+```javascript
+// @/sanity/schemas/index.ts
+import project from "./project-schema";
+
+const schemas = [project];
+
+export default schemas;
+```
+
+```javascript
+// @/sanity/schemas/project-schema.ts
+const project = {
+  name: "project",
+  title: "Projects",
+  type: "document",
+  fields: [
+    {
+      name: "name",
+      title: "Name",
+      type: "string",
+    },
+    {
+      name: "slug",
+      title: "Slug",
+      type: "slug",
+      // Allows us to get this value from the above name field.
+      options: { source: "name" },
+    },
+    {
+      name: "image",
+      title: "Image",
+      type: "image",
+      // Hotspot allows zooming on the image.
+      options: { hotspot: true },
+      fields: [
+        {
+          name: "alt",
+          title: "Alt",
+          type: "string",
+        },
+      ],
+    },
+    {
+      name: "url",
+      title: "URL",
+      type: "url",
+    },
+    {
+      name: "content",
+      title: "Content",
+      type: "array",
+      // Array with of type of block creates a rich text field (RTF).
+      of: [{ type: "block" }],
+    },
+  ],
+};
+
+export default project;
+```
+
+```javascript
+// @/sanity.config.ts
+import { structureTool } from "sanity/structure";
+import { defineConfig } from "sanity";
+// ? import project from "./sanity/schemas/project-schema";
+import schemas from "./sanity/schemas";
+
+const config = defineConfig({
+  projectId: "m0llv72m",
+  dataset: "production",
+  title: "Developer Portfolio Studio",
+  apiVersion: "2024-09-04",
+  basePath: "/admin",
+  plugins: [structureTool()],
+  // ? schema: { types: [project] },
+  // Refactor to allow for barrel file for all schemas.
+  schema: { types: schemas },
+});
+
+export default config;
+```
+
+#### Creating Projects
+
+##### Sanity Studio
+
+- In Sanity Studio, we click Projects, and click new.
+- Fill out the corresponding fields (All pulling from the project schema file).
+- Once filled out you click publish.
+
+##### Next.js App Sanity Folder
+
+- Now to pull this data into our app we first create a `sanity-utils.ts` file inside the `sanity` folder. This file will contain all of the functions to be used to grab data.
+  - In this file we import `createClient` from the `next-sanity` package. We create an async function `getProjects` where we create the client using data similar to `sanity.config.ts`. With this client being created we can read data from our studio.
+  - We then perform a `client.fetch()` which is where we write our GROQ query.
+    - Within the groq query we start with an asterisks which grabs everything in our dataset, filter down what we want to query for (i.e. []), and then we open up a projection (i.e. {}).
+    - Inside the square brackets we set type to projects to pull all our projects.
+    - Inside curly brackets we pull id, createdAt, name, and slug (Which is special case because we have a schema type of slug, so we rename slug.current to just slug from now on), image (Also a special case, where we pull the image.asset reference down to the URL and rename it to just image), url, and content.
+
+##### Next.js App Folder
+
+- Go to `@/app/page.tsx` and pull in the project info for the homepage.
+  - First, we import `getProjects` from `sanity-utils.ts`.
+  - We no longer need to do this by `getStaticProps` and `getStaticPaths` with Next.js 14. We now only have to call an await function on getProjects and change the homepage function to `async`.
+  - When can now map over projects with key of `_id` and call fields such as `project.name`.
+  - This all happens serverside since all routes within app are defaulted to serverside.
+
+Completed sanity-utils and page.tsx code:
+
+```jsx
+// @/sanity/sanity-utils.ts
+import { createClient, groq } from "next-sanity";
+
+export async function getProjects() {
+  // Use query language GROQ to grab the created projects from studio.
+  const client = createClient({
+    // Pass in a config so that we can use next-sanity package to create a client that can read from our content link or studio.
+    // This config will only read from our content whereas the sanity config was to generate our sanity studio. You only need projectId, dataset, and apiVersion
+    projectId: "m0llv72m",
+    dataset: "production",
+    apiVersion: "2024-09-04",
+  });
+
+  // This needs to be a return so we can grab our data.
+  return client.fetch(
+    groq`*[_type == "project"]{
+      _id,
+      _createdAt,
+      name,
+      "slug": slug.current,
+      "image": image.asset->url,
+      url,
+      content
+    }`
+  );
+}
+```
+
+```jsx
+// @/app/page.tsx
+// import Image from "next/image";
+// Import getProjects from sanity-utils.
+import { getProjects } from "@/sanity/sanity-utils";
+
+export default async function Home() {
+  const projects = await getProjects();
+
+  return (
+    <main className="flex min-h-screen flex-col items-center justify-center">
+      <h1 className="antialiased mb-4 text-4xl font-extrabold leading-none tracking-normal text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
+        evanmarshall.
+        <span className="text-transparent bg-clip-text bg-gradient-to-r to-orange-500 from-indigo-500">
+          dev
+        </span>
+      </h1>
+      {/* <Image
+          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
+          src="/next.svg"
+          alt="Next.js Logo"
+          width={180}
+          height={37}
+          priority
+        /> */}
+
+      {/* Map over Sanity Projects */}
+      <div>
+        {projects.map((project) => (
+          <div key={project._id}>{project.name}</div>
+        ))}
+      </div>
+    </main>
+  );
+}
+```
+
+#### Fix Typescript Type for `project`
+
+- Create a new folder in the root directory called `types`, which contains `Project.ts`.
+  - Within this file we need to provide everything we have defined in our Sanity schema.
+- Back in page.tsx we can add to the map: `{projects.map((project: Project))}` and import Project type.
+- **OR** you can add Project as an array of objects to the initial const projects / getProjects function.
+- **OR** you can add a promise to the `getProjects` function within `sanity-utils.ts`. Since we are doing it inside of our call, anywhere we call `getProjects` (i.e. homepage `page.tsx`) we will see that it returns a `Promise` which gives an array of projects.
+  - This is the recommended way to do it because you keep all of your types in Sanity utils and your main React component don't show types but they are typed.
+
+Final code for `Project.ts` and `sanity-utils.ts`:
+
+```jsx
+//@/types/Project.ts
+import { PortableTextBlock } from "next-sanity";
+
+export type Project = {
+  _id: string;
+  _createdAt: Date;
+  name: string;
+  slug: string;
+  image: string;
+  url: string;
+  // Sanity stores content in rich text blocks.
+  content: PortableTextBlock[];
+};
+```
+
+```jsx
+// @/sanity/sanity-utils.ts
+import { Project } from "@/types/Project";
+import { createClient, groq } from "next-sanity";
+
+export async function getProjects(): Promise<Project[]> {
+  // Use query language GROQ to grab the created projects from studio.
+  const client = createClient({
+    // Pass in a config so that we can use next-sanity package to create a client that can read from our content link or studio.
+    // This config will only read from our content whereas the sanity config was to generate our sanity studio. You only need projectId, dataset, and apiVersion
+    projectId: "m0llv72m",
+    dataset: "production",
+    apiVersion: "2024-09-04",
+  });
+
+  // This needs to be a return so we can grab our data.
+  return client.fetch(
+    groq`*[_type == "project"]{
+      _id,
+      _createdAt,
+      name,
+      "slug": slug.current,
+      "image": image.asset->url,
+      url,
+      content
+    }`
+  );
+}
+```

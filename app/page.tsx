@@ -1,6 +1,13 @@
 // import Image from "next/image";
+// Import getProjects from sanity-utils.
+import { getProjects } from "@/sanity/sanity-utils";
+// ? import { Project } from "@/types/Project";
 
-export default function Home() {
+export default async function Home() {
+  const projects = await getProjects();
+  // Option #1 for adding project types.
+  // ? const projects: Project[] = await getProjects();
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-center">
       <h1 className="antialiased mb-4 text-4xl font-extrabold leading-none tracking-normal text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
@@ -17,6 +24,20 @@ export default function Home() {
           height={37}
           priority
         /> */}
+
+      {/* Map over Sanity Projects */}
+      <div>
+        {projects.map((project) => (
+          <div key={project._id}>
+            <div>{project.name}</div>
+            {/* <div>{project.slug}</div> */}
+          </div>
+        ))}
+        {/* Option #2 for adding project types. */}
+        {/* {projects.map((project: Project) => (
+          <div key={project._id}>{project.name}</div>
+        ))} */}
+      </div>
     </main>
   );
 }
