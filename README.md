@@ -281,3 +281,72 @@ export async function getProjects(): Promise<Project[]> {
   );
 }
 ```
+
+#### Creating Projects Pages Dynamically
+
+Within the app directory (dir) you will create `@/projects/[project]/page.tsx` where `[project]` is the dynamic part of the route so when we pass in the slug that will be passed in as the project.
+
+In previous versions of Next.js you used to have to get static paths and static props for dynamic routes, but since Next.js 13 you only need to pass in params, which we get directly from the route and Next.js will pass it in.
+
+`params.project` is used because of the filename `[project]`. We then assign await `getProject(slug)` to a variable called project, similar to how we called `getProjects()` in `@/app/page.tsx` right inside of the component. Now we can start using the project within the return body.
+
+Now we need to fix the errors. First add async to the component function (fxn) to remove await error. Then we need to fix the type error on params by adding a `type Props` object assigning project to type of string then adding `: Props` after the params argument in the component. Lastly, we can fix the `getProject` error, by adding info to the `sanity-utils.ts` file.
+
+In the Sanity utils file we create another async function called `getProject` where we pass in slug which is a string type. We return a promise like we did in `getProjects` for a `<Project>`. This generates an error for returning an empty promise, which we fix that by copying the above client and groq query, but change type in the groq query to `project` and `slug.current == $slug`. This as is will return an array of Projects so we want to specify to only fetch the first one.
+
+**An overview**: Find any project where the slug equals the slug I am passing in and only give me that one back. We pass in the slug after the query by adding `{slug: slug}` which can be shorthand as just `slug`.
+
+**Important Note**: We do not have to write the const client each time. It can be moved out of the utils file. We can create a `client-config.ts` within the sanity folder (Different from sanity config, which is for the studio, whereas this one is for the client). We add an object to the config variable and add in the config info from the Sanity utils file. We can go back to the utils file, remove the `const client` and add `createClient(clientConfig)` to the return statement with the import from `client-config.ts`.
+
+Now we go back to the dynamic `~/[project]/page.tsx` and add the import for `getProject` from Sanity utils.
+
+Now anytime we click one of the projects it will dynamically create the page slug based on name of the project. This is all rendering on the server so we are sending less JS to render the project page on the browser.
+
+Final code for projects `page.tsx` and `sanity-utils.ts`:
+
+```jsx
+// @/projects/[project]/page.tsx
+import { getProject } from "@/sanity/sanity-utils";
+
+type Props = {
+  params: { project: string };
+};
+
+export default async function Project({ params }: Props) {
+  const slug = params.project;
+  const project = await getProject(slug);
+
+  return <div>{project.name}</div>;
+}
+```
+
+```jsx
+// @/sanity/sanity-utils.ts
+import { Project } from "@/types/Project";
+import { createClient, groq } from "next-sanity";
+
+// ... OTHER CODE HERE ...
+
+// Returns a single Project.
+export async function getProject(slug: string): Promise<Project> {
+  const client = createClient({
+    projectId: "m0llv72m",
+    dataset: "production",
+    apiVersion: "2024-09-04",
+  });
+
+  return client.fetch(
+    groq`*[_type == "project" && slug.current == $slug][0]{
+      _id,
+      _createdAt,
+      name,
+      "slug": slug.current,
+      "image": image.asset->url,
+      url,
+      content
+    }`,
+    // ? { slug: slug }
+    { slug }
+  );
+}
+```
