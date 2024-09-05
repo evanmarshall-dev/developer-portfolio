@@ -356,3 +356,11 @@ const config = {
 
 export default config;
 ```
+
+For calling on portable text block (RTF) we have to display in a special way, because it is essentially an array of blocks. We first need to install `@portabletext/react` package and import into the file you will be using it in. Using this package we do not have to loop over all of the content. We set `PortableText` value to the `{project.content}`.
+
+#### Creating a Navbar
+
+You will create the navbar in the `layout.tsx` file since it will be a global component.
+
+#### Issue with Styling `layout.tsx` and Sanity Studio
