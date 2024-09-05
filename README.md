@@ -302,7 +302,7 @@ Now we go back to the dynamic `~/[project]/page.tsx` and add the import for `get
 
 Now anytime we click one of the projects it will dynamically create the page slug based on name of the project. This is all rendering on the server so we are sending less JS to render the project page on the browser.
 
-Final code for projects `page.tsx` and `sanity-utils.ts`:
+Final code for projects `page.tsx`, `sanity-utils.ts`, and `client-config.ts`:
 
 ```jsx
 // @/projects/[project]/page.tsx
@@ -324,18 +324,13 @@ export default async function Project({ params }: Props) {
 // @/sanity/sanity-utils.ts
 import { Project } from "@/types/Project";
 import { createClient, groq } from "next-sanity";
+import clientConfig from "./config/client-config";
 
 // ... OTHER CODE HERE ...
 
 // Returns a single Project.
 export async function getProject(slug: string): Promise<Project> {
-  const client = createClient({
-    projectId: "m0llv72m",
-    dataset: "production",
-    apiVersion: "2024-09-04",
-  });
-
-  return client.fetch(
+  return createClient(clientConfig).fetch(
     groq`*[_type == "project" && slug.current == $slug][0]{
       _id,
       _createdAt,
@@ -349,4 +344,15 @@ export async function getProject(slug: string): Promise<Project> {
     { slug }
   );
 }
+```
+
+```jsx
+// @/sanity/config/client-config.ts
+const config = {
+  projectId: "m0llv72m",
+  dataset: "production",
+  apiVersion: "2024-09-04",
+};
+
+export default config;
 ```
