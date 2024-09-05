@@ -1,6 +1,7 @@
-// import Image from "next/image";
 // Import getProjects from sanity-utils.
 import { getProjects } from "@/sanity/sanity-utils";
+import Image from "next/image";
+import Link from "next/link";
 // ? import { Project } from "@/types/Project";
 
 export default async function Home() {
@@ -16,28 +17,39 @@ export default async function Home() {
           dev
         </span>
       </h1>
-      {/* <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        /> */}
-
-      {/* Map over Sanity Projects */}
-      <div>
+      <h2 className="text-4xl font-extrabold dark:text-gray-400">
+        My Projects
+      </h2>
+      <div className="mt-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+        {/* Map over Sanity Projects */}
         {projects.map((project) => (
-          <div key={project._id}>
-            <div>{project.name}</div>
+          <Link
+            href={`/projects/${project.slug}`}
+            key={project._id}
+            className="border-2 border-gray-500 rounded-lg p-1 text-center hover:scale-105 hover:border-blue-500 transition"
+          >
+            {/* If project.image exist then lets show image. */}
+            {project.image && (
+              <Image
+                className="object-cover rounded-lg border border-gray-500"
+                src={project.image}
+                // TODO: Pull in img alt in sanity-utils.ts and we will replace the below project.name with it.
+                alt={project.name}
+                width={450}
+                height={200}
+              />
+            )}
+            <div className="mt-2 font-extrabold bg-gradient-to-r from-slate-300 via-emerald-300 to-lime-500 bg-clip-text text-transparent">
+              {project.name}
+            </div>
             {/* <div>{project.slug}</div> */}
-          </div>
+          </Link>
         ))}
-        {/* Option #2 for adding project types. */}
-        {/* {projects.map((project: Project) => (
+      </div>
+      {/* Option #2 for adding project types. */}
+      {/* {projects.map((project: Project) => (
           <div key={project._id}>{project.name}</div>
         ))} */}
-      </div>
     </main>
   );
 }
