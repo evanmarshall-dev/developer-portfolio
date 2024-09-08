@@ -9,7 +9,7 @@ export default async function Page({ params }: Props) {
   const page = await getPage(params.slug);
 
   return (
-    <main className="py-20">
+    <section className="py-20">
       <header>
         <h1 className="bg-gradient-to-r from-slate-300 via-emerald-300 to-lime-500 bg-clip-text text-transparent text-5xl font-extrabold drop-shadow">
           {page.title}
@@ -18,6 +18,6 @@ export default async function Page({ params }: Props) {
       <div className="text-lg text-gray-300 mt-10">
         <PortableText value={page.content} />
       </div>
-    </main>
+    </section>
   );
 }

@@ -10,7 +10,7 @@ export default async function Home() {
   // ? const projects: Project[] = await getProjects();
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center">
+    <section className="flex min-h-screen flex-col items-center justify-center">
       <h1 className="antialiased mb-4 text-4xl font-extrabold leading-none tracking-normal text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
         evanmarshall.
         <span className="text-transparent bg-clip-text bg-gradient-to-r to-orange-500 from-indigo-500">
@@ -50,6 +50,6 @@ export default async function Home() {
       {/* {projects.map((project: Project) => (
           <div key={project._id}>{project.name}</div>
         ))} */}
-    </main>
+    </section>
   );
 }

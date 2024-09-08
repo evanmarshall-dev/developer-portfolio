@@ -7,7 +7,20 @@ const config: Config = {
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        wild_sand: "#F5F5F5",
+        ebony: "#0f1626",
+        sunset_orange: "#ff533d",
+        sandrift: "#ab987a",
+      },
+      fontFamily: {
+        // mono: ["var(--font-noto_sans_mono)"],
+        mono: ["var(--font-roboto_mono)"],
+        // sans: [""],
+        // serif: [""],
+      },
+    },
   },
   plugins: [],
 };

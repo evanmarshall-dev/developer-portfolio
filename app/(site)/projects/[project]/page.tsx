@@ -14,7 +14,7 @@ export default async function Project({ params }: Props) {
   return (
     // Delete class for main since it is defined in layout.tsx.
     // ? <main className="max-w-4xl mx-auto py-20">
-    <main className="py-20">
+    <section className="py-20">
       <header className="flex items-center justify-between">
         <h1 className="bg-gradient-to-r from-slate-300 via-emerald-300 to-lime-500 bg-clip-text text-transparent text-5xl font-extrabold drop-shadow">
           {project.name}
@@ -41,6 +41,6 @@ export default async function Project({ params }: Props) {
         height={1080}
         className="mt-10 border-2 border-gray-200 object-cover rounded-xl"
       />
-    </main>
+    </section>
   );
 }
