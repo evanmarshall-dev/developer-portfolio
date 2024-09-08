@@ -57,11 +57,11 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <body className="bg-wild_sand text-ebony dark:bg-ebony dark:text-wild_sand">
+      <body>
         {/* <main className={`${noto_sans_mono.className} max-w-4xl mx-auto py-10`}> */}
         {/* Apply below if using Tailwind and then update Tailwind config to extend the correct font family. */}
         <main
-          className={`${roboto_mono.variable} font-mono max-w-4xl mx-auto py-10`}
+          className={`${roboto_mono.variable} font-mono max-w-4xl mx-auto py-10 antialiased`}
         >
           <header className="flex items-center justify-between">
             <Link
