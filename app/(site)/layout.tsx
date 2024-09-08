@@ -57,16 +57,21 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <body className="bg-ebony text-wild_sand">
+      <body className="bg-wild_sand text-ebony dark:bg-ebony dark:text-wild_sand">
         {/* <main className={`${noto_sans_mono.className} max-w-4xl mx-auto py-10`}> */}
         {/* Apply below if using Tailwind and then update Tailwind config to extend the correct font family. */}
         <main
           className={`${roboto_mono.variable} font-mono max-w-4xl mx-auto py-10`}
         >
           <header className="flex items-center justify-between">
-            <Link className="text-lg font-bold" href="/">
+            <Link
+              className="text-lg font-bold hover:text-sunset_orange"
+              href="/"
+            >
               evanmarshall<span className="text-sunset_orange">.</span>
-              <span className="text-sandrift">dev</span>
+              <span className="text-sandrift hover:text-sunset_orange">
+                dev
+              </span>
             </Link>
             <div className="flex items-center gap-5 text-sm text-gray-300">
               {pages.map((page) => (
