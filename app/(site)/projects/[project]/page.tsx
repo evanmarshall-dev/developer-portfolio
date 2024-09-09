@@ -2,12 +2,6 @@ import { getProject } from "@/sanity/sanity-utils";
 import Link from "next/link";
 import { PortableText } from "@portabletext/react";
 import Image from "next/image";
-import type { Metadata } from "next";
-
-// TODO: Figure out how to dynamically generate title metadata based on Sanity.io title field.
-export const metadata: Metadata = {
-  title: "Projects",
-};
 
 type Props = {
   params: { project: string };
@@ -49,4 +43,12 @@ export default async function Project({ params }: Props) {
       />
     </section>
   );
+}
+
+export async function generateMetadata({ params }: Props) {
+  const name = await getProject(params.project);
+
+  return {
+    title: name.name,
+  };
 }

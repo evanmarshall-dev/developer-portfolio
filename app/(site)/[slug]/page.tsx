@@ -1,11 +1,5 @@
 import { getPage } from "@/sanity/sanity-utils";
 import { PortableText } from "next-sanity";
-import { Metadata } from "next";
-
-// TODO: Figure out how to dynamically generate title metadata based on Sanity.io title field.
-export const metadata: Metadata = {
-  title: "Pages",
-};
 
 type Props = {
   params: { slug: string };
@@ -26,4 +20,12 @@ export default async function Page({ params }: Props) {
       </div>
     </section>
   );
+}
+
+export async function generateMetadata({ params }: Props) {
+  const name = await getPage(params.slug);
+
+  return {
+    title: name.title,
+  };
 }
