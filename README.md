@@ -12,7 +12,7 @@ Two important aspects of the config are the **dataset** and **projectId**. Proje
 
 This is where we tell our studio what to look like or what fields to have.
 
-#### Content Link
+#### Content Lake
 
 Is where all of the studio data lives within a cloud. All of this happens within **datasets**. Datasets are a collection of JSON documents that can be of different types and have references to each other. As we start adding schemas and inputting content we will be able to see the raw JSON of our data.
 
@@ -166,7 +166,7 @@ import { createClient, groq } from "next-sanity";
 export async function getProjects() {
   // Use query language GROQ to grab the created projects from studio.
   const client = createClient({
-    // Pass in a config so that we can use next-sanity package to create a client that can read from our content link or studio.
+    // Pass in a config so that we can use next-sanity package to create a client that can read from our content lake or studio.
     // This config will only read from our content whereas the sanity config was to generate our sanity studio. You only need projectId, dataset, and apiVersion
     projectId: "m0llv72m",
     dataset: "production",
@@ -260,7 +260,7 @@ import { createClient, groq } from "next-sanity";
 export async function getProjects(): Promise<Project[]> {
   // Use query language GROQ to grab the created projects from studio.
   const client = createClient({
-    // Pass in a config so that we can use next-sanity package to create a client that can read from our content link or studio.
+    // Pass in a config so that we can use next-sanity package to create a client that can read from our content lake or studio.
     // This config will only read from our content whereas the sanity config was to generate our sanity studio. You only need projectId, dataset, and apiVersion
     projectId: "m0llv72m",
     dataset: "production",
@@ -419,7 +419,7 @@ import clientConfig from "./config/client-config";
 export async function getProjects(): Promise<Project[]> {
   // Use query language GROQ to grab the created projects from studio.
   // ? const client = createClient({
-  //   // Pass in a config so that we can use next-sanity package to create a client that can read from our content link or studio.
+  //   // Pass in a config so that we can use next-sanity package to create a client that can read from our content lake or studio.
   //   // This config will only read from our content whereas the sanity config was to generate our sanity studio. You only need projectId, dataset, and apiVersion
   //   ? projectId: "m0llv72m",
   //   ? dataset: "production",
