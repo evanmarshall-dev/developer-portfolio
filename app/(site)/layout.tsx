@@ -1,50 +1,61 @@
-import type { Metadata } from "next";
-import { Noto_Sans_Mono, Roboto_Mono } from "next/font/google";
-import "../globals.css";
+import "@/app/globals.css";
+import { roboto_mono } from "@/app/(site)/ui/fonts";
 import Link from "next/link";
 import { getPages } from "@/sanity/sanity-utils";
-// Could also import a local font.
-// ? import localFont from "next/font/local";
-
-const noto_sans_mono = Noto_Sans_Mono({
-  subsets: ["latin"],
-  // Add below property if using Tailwind.
-  variable: "--font-noto_sans_mono",
-});
-const roboto_mono = Roboto_Mono({
-  subsets: ["latin"],
-  variable: "--font-roboto_mono",
-});
-// This is how you would apply it as a variable.
-// ? const roboto = localFont({
-//   ? src: [
-//     ? {
-//       ? path: "./Roboto-Regular.woff2",
-//       ? weight: "400",
-//       ? style: "normal",
-//     ? },
-//     ? {
-//       ? path: "./Roboto-Italic.woff2",
-//       ? weight: "400",
-//       ? style: "italic",
-//     ? },
-//     ? {
-//       ? path: "./Roboto-Bold.woff2",
-//       ? weight: "700",
-//       ? style: "normal",
-//     ? },
-//     ? {
-//       ? path: "./Roboto-BoldItalic.woff2",
-//       ? weight: "700",
-//       ? style: "italic",
-//     ? },
-//   ? ],
-// ? });
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "evanmarshall.dev",
+  title: {
+    template: "evanmarshall.dev | %s",
+    default: "evanmarshall.dev",
+  },
   description:
     "Contact me today to discuss how I can get your business online and working for you.",
+  keywords: ["Web Developer", "Website", "Nova Scotia", "Web Design"],
+  authors: [
+    { name: "Evan Marshall", url: "https://github.com/evanmarshall-dev" },
+  ],
+  creator: "Evan Marshall",
+  metadataBase: new URL("https://evanmarshall.dev"),
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: "evanmarshall.dev",
+    description:
+      "Contact me today to discuss how I can get your business online and working for you.",
+    url: "https://evanmarshall.dev",
+    // images: [
+    //   {
+    //     url: "https://nextjs.org/og.png", // Must be an absolute URL
+    //     width: 800,
+    //     height: 600,
+    //   },
+    //   {
+    //     url: "https://nextjs.org/og-alt.png", // Must be an absolute URL
+    //     width: 1800,
+    //     height: 1600,
+    //     alt: "My custom alt",
+    //   },
+    // ],
+    locale: "en_CA",
+    type: "website",
+  },
+  robots: {
+    index: true,
+    // follow: true,
+    // nocache: true,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "evanmarshall.dev",
+    description:
+      "Contact me today to discuss how I can get your business online and working for you.",
+    // siteId: "1467726470533754880",
+    // creator: "@nextjs",
+    // creatorId: "1467726470533754880",
+    // images: ["https://nextjs.org/og.png"], // Must be an absolute URL
+  },
 };
 
 export default async function RootLayout({
@@ -65,13 +76,11 @@ export default async function RootLayout({
         >
           <header className="flex items-center justify-between">
             <Link
-              className="text-lg font-bold hover:text-sunset_orange"
+              className="text-lg font-bold hover:text-sandrift transition"
               href="/"
             >
               evanmarshall<span className="text-sunset_orange">.</span>
-              <span className="text-sandrift hover:text-sunset_orange">
-                dev
-              </span>
+              <span className="text-sandrift">dev</span>
             </Link>
             <div className="flex items-center gap-5 text-sm text-gray-300">
               {pages.map((page) => (
