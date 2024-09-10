@@ -2,7 +2,7 @@ import "@/app/globals.css";
 import { roboto_mono } from "@/app/(site)/ui/fonts";
 import type { Metadata } from "next";
 // import Navbar from "@/app/(site)/ui/navbar/(client)/Navbar";
-import Getpages from "./ui/navbar/(server)/Getpages";
+import Getpages from "@/app/(site)/ui/navbar/(server)/Getpages";
 
 export const metadata: Metadata = {
   title: {
