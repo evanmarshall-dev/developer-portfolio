@@ -1,8 +1,7 @@
 import "@/app/globals.css";
 import { roboto_mono } from "@/app/(site)/ui/fonts";
-import Link from "next/link";
-import { getPages } from "@/sanity/sanity-utils";
 import type { Metadata } from "next";
+import { Navbar } from "./ui/Navbar";
 
 export const metadata: Metadata = {
   title: {
@@ -63,37 +62,15 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Get all of our pages here.
-  const pages = await getPages();
-
   return (
     <html lang="en">
       <body>
         {/* <main className={`${noto_sans_mono.className} max-w-4xl mx-auto py-10`}> */}
         {/* Apply below if using Tailwind and then update Tailwind config to extend the correct font family. */}
         <main
-          className={`${roboto_mono.variable} font-mono max-w-4xl mx-auto py-10 antialiased`}
+          className={`${roboto_mono.variable} font-mono max-w-7xl mx-auto py-10 px-4 md:px-8 antialiased`}
         >
-          <header className="flex items-center justify-between">
-            <Link
-              className="text-lg font-bold hover:text-sandrift transition"
-              href="/"
-            >
-              evanmarshall<span className="text-sunset_orange">.</span>
-              <span className="text-sandrift">dev</span>
-            </Link>
-            <div className="flex items-center gap-5 text-sm text-gray-300">
-              {pages.map((page) => (
-                <Link
-                  key={page._id}
-                  href={`/${page.slug}`}
-                  className="hover:underline"
-                >
-                  {page.title}
-                </Link>
-              ))}
-            </div>
-          </header>
+          <Navbar />
           {children}
         </main>
       </body>
