@@ -9,6 +9,11 @@ const project = {
       type: "string",
     },
     {
+      name: "nickname",
+      title: "Nickname",
+      type: "string",
+    },
+    {
       name: "slug",
       title: "Slug",
       type: "slug",

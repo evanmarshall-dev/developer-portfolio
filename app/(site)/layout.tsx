@@ -1,7 +1,8 @@
 import "@/app/globals.css";
 import { roboto_mono } from "@/app/(site)/ui/fonts";
 import type { Metadata } from "next";
-import { Navbar } from "./ui/Navbar";
+// import Navbar from "@/app/(site)/ui/navbar/(client)/Navbar";
+import Getpages from "./ui/navbar/(server)/Getpages";
 
 export const metadata: Metadata = {
   title: {
@@ -70,7 +71,7 @@ export default async function RootLayout({
         <main
           className={`${roboto_mono.variable} font-mono max-w-7xl mx-auto py-10 px-4 md:px-8 antialiased`}
         >
-          <Navbar />
+          <Getpages />
           {children}
         </main>
       </body>

@@ -26,9 +26,10 @@ export default async function Home() {
           <Link
             href={`/projects/${project.slug}`}
             key={project._id}
-            className="border-2 border-gray-500 rounded-lg p-1 text-center hover:scale-105 hover:border-blue-500 transition"
+            className="border-2 border-gray-500 rounded-lg p-1 text-center hover:scale-105 hover:border-blue-500 active:border-blue-500 active:scale-105 transition"
           >
             {/* If project.image exist then lets show image. */}
+            {/* TODO: Remove priority when these images get pushed below the fold. */}
             {project.image && (
               <Image
                 className="object-cover rounded-lg border border-gray-500"
@@ -36,6 +37,7 @@ export default async function Home() {
                 alt={project.image.alt}
                 width={450}
                 height={200}
+                priority
               />
             )}
             <div className="mt-2 font-extrabold bg-gradient-to-r from-slate-300 via-emerald-300 to-lime-500 bg-clip-text text-transparent">
