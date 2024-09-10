@@ -5,7 +5,11 @@ export type Project = {
   _createdAt: Date;
   name: string;
   slug: string;
-  image: string;
+  // image: string;
+  image: {
+    url: string;
+    alt: string;
+  };
   url: string;
   // Sanity stores content in rich text blocks.
   content: PortableTextBlock[];

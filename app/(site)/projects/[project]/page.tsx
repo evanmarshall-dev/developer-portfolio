@@ -32,11 +32,9 @@ export default async function Project({ params }: Props) {
       <div className="text-lg text-gray-300 mt-5">
         <PortableText value={project.content} />
       </div>
-      {/* TODO: Pull in img alt in sanity-utils.ts and we will replace the below
-      project.name with it. */}
       <Image
-        src={project.image}
-        alt={project.name}
+        src={project.image.url}
+        alt={project.image.alt}
         width={1920}
         height={1080}
         className="mt-10 border-2 border-gray-200 object-cover rounded-xl"

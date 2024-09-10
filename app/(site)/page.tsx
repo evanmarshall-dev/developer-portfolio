@@ -32,9 +32,8 @@ export default async function Home() {
             {project.image && (
               <Image
                 className="object-cover rounded-lg border border-gray-500"
-                src={project.image}
-                // TODO: Pull in img alt in sanity-utils.ts and we will replace the below project.name with it.
-                alt={project.name}
+                src={project.image.url}
+                alt={project.image.alt}
                 width={450}
                 height={200}
               />
